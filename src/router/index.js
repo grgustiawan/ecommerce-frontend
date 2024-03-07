@@ -22,6 +22,7 @@ import PurchaseGuideView from '@/views/PurchaseGuideView.vue'
 import PrivacyPolicyView from '@/views/PrivacyPolicyView'
 import TermsOfServicesView from '@/views/TermsOfServicesView.vue'
 import CategoryDetailsView from '@/views/CategoryDetailsView'
+import OnlineConsulView from '@/views/OnlineConsulView.vue'
 
 const routes = [
   {path: '/', name: 'Home', component: LandingView},
@@ -47,6 +48,7 @@ const routes = [
   {path: '/privacy-policy', name: 'PrivacyPolicy', component: PrivacyPolicyView},
   {path: '/terms-of-services', name: 'TermsOfServices', component: TermsOfServicesView},
   {path: '/category/:id', name: 'CategoryDetails', component: CategoryDetailsView},
+  {path: '/online-consul', name: 'OnlineConsul', component: OnlineConsulView},
 ]
 
 const router = createRouter({
