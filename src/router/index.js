@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store';
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -26,8 +27,8 @@ import OnlineConsulView from '@/views/OnlineConsulView.vue'
 
 const routes = [
   {path: '/', name: 'Home', component: LandingView},
-  {path: '/store', name: 'Store', component: HomeView},
-  {path: '/login', name: 'Login', component: LoginView},
+  {path: '/store', name: 'Store', component: HomeView, meta: { login: true }},
+  {path: '/login', name: 'Login', component: LoginView, meta: { guest: true }},
   {path: '/register', name: 'Register', component: RegisterView},
   {path: '/forgot', name: 'Forgot', component: ForgotPassword},
   {path: '/reset/:token', name: 'Reset', component: ResetPassword},
@@ -38,7 +39,7 @@ const routes = [
   {path: '/cart', name: 'Cart', component: CartView},
   {path: '/checkout', name: 'Checkout', component: CheckoutView},
   {path: '/invoice/:invid/:usrid', name: 'Invoice', component: InvoiceView},
-  {path: '/account', name: 'Account', component: AccountView},
+  {path: '/account', name: 'Account', component: AccountView, meta: { login: true}},
   {path: '/location', name: 'Location', component: StoreLocationView},
   {path: '/contact', name: 'Contact', component: ContactView},
   {path: '/articles', name: 'Articles', component: ArticleListView},
@@ -56,8 +57,27 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(() => {
+router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0);
-})
+  if (to.matched.some((record) => record.meta.login)) {
+    if (!store.getters.GET_AUTH_TOKEN) {
+      next({
+        name: 'Login',
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some((record) => record.meta.guest)) {
+    if (store.getters.GET_AUTH_TOKEN) {
+      next({
+        name: 'Home',
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
 
 export default router

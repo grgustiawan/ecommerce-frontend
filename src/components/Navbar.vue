@@ -356,7 +356,7 @@
                       Home
                     </a>
                   </li>
-                  <li>
+                  <li v-if="this.$store.getters.GET_AUTH_TOKEN">
                     <a
                       href="/store"
                       :class="{ active: this.$route.name === 'Store' }">
