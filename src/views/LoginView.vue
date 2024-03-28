@@ -18,7 +18,7 @@
               <div class="col-lg-6 pr-30 d-none d-lg-block">
                 <img
                   class="border-radius-15"
-                  src="assets/images/page/login-1.png"
+                  src="assets/images/page/login-1.jpg"
                   alt="" />
               </div>
               <div class="col-lg-6 col-md-8">
@@ -90,6 +90,7 @@
                       </div>
                       <a
                         class="btn btn-block hover-up"
+                        style="width: 150px;height: 50px;"
                         name="login"
                         @click="login">
                         <span

@@ -44,11 +44,12 @@ export const auth = {
     LOGIN(context, loginData) {
       return new Promise((resolve, reject) => {
         axios
-          .post('/login', loginData)
+          .post('http://172.30.14.30:5110/api/v1/login', loginData)
           .then((response) => {
             context.commit('SET_AUTH_TOKEN', response.data.data.token);
             context.commit('SET_AUTH_INFO', response.data.data.user);
             resolve(response);
+            window.location.reload();
           })
           .catch((error) => {
             reject(error);
@@ -105,7 +106,7 @@ export const auth = {
       axios.defaults.headers.common['Authorization'] = context.state.auth_token;
       return new Promise((resolve, reject) => {
         axios
-          .get('/logout')
+          .get('http://172.30.14.30:5110/api/v1/logout')
           .then((response) => {
             context.commit('SET_AUTH_LOGOUT');
             resolve(response);

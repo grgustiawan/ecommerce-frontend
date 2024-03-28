@@ -23,6 +23,7 @@ import PurchaseGuideView from '@/views/PurchaseGuideView.vue'
 import PrivacyPolicyView from '@/views/PrivacyPolicyView'
 import TermsOfServicesView from '@/views/TermsOfServicesView.vue'
 import CategoryDetailsView from '@/views/CategoryDetailsView'
+import AllProductView from '@/views/AllProductView'
 import OnlineConsulView from '@/views/OnlineConsulView.vue'
 
 const routes = [
@@ -32,13 +33,14 @@ const routes = [
   {path: '/register', name: 'Register', component: RegisterView},
   {path: '/forgot', name: 'Forgot', component: ForgotPassword},
   {path: '/reset/:token', name: 'Reset', component: ResetPassword},
-  {path: '/product/:id', name: 'Product', component: ProductView},
-  {path: '/brand', name: 'Brand', component: BrandView},
-  {path: '/categories', name: 'Category', component: CategoryView},
-  {path: '/wishlist', name: 'Wishlist', component: WishlistView},
-  {path: '/cart', name: 'Cart', component: CartView},
-  {path: '/checkout', name: 'Checkout', component: CheckoutView},
-  {path: '/invoice/:invid/:usrid', name: 'Invoice', component: InvoiceView},
+  {path: '/product/:id', name: 'Product', component: ProductView, meta: {login: true}},
+  {path: '/products', name: 'Products', component: AllProductView, meta: {login: true}},
+  {path: '/brand', name: 'Brand', component: BrandView, meta: {login: true}},
+  {path: '/categories', name: 'Category', component: CategoryView, meta: {login: true}},
+  {path: '/wishlist', name: 'Wishlist', component: WishlistView, meta: {login: true}},
+  {path: '/cart', name: 'Cart', component: CartView, meta: {login: true}},
+  {path: '/checkout', name: 'Checkout', component: CheckoutView, meta: {login: true}},
+  {path: '/invoice/:invid/:usrid', name: 'Invoice', component: InvoiceView, meta: {login: true}},
   {path: '/account', name: 'Account', component: AccountView, meta: { login: true}},
   {path: '/location', name: 'Location', component: StoreLocationView},
   {path: '/contact', name: 'Contact', component: ContactView},
@@ -48,7 +50,7 @@ const routes = [
   {path: '/purchase-guide', name: 'PurchaseGuide', component: PurchaseGuideView},
   {path: '/privacy-policy', name: 'PrivacyPolicy', component: PrivacyPolicyView},
   {path: '/terms-of-services', name: 'TermsOfServices', component: TermsOfServicesView},
-  {path: '/category/:id', name: 'CategoryDetails', component: CategoryDetailsView},
+  {path: '/category/:id', name: 'CategoryDetails', component: CategoryDetailsView, meta: {login: true}},
   {path: '/online-consul', name: 'OnlineConsul', component: OnlineConsulView},
 ]
 

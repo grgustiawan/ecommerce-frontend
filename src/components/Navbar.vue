@@ -199,7 +199,7 @@
                                     </a>
                                     <a href="shop-compare.html"><span class="lable ml-0">Compare</span></a>
                                 </div> -->
-                <div class="header-action-icon-2">
+                <div class="header-action-icon-2" v-if="isLogin">
                   <a href="shop-wishlist.html">
                     <img
                       class="svgInject"
@@ -211,7 +211,7 @@
                     ><span class="lable">Wishlist</span></router-link
                   >
                 </div>
-                <div class="header-action-icon-2">
+                <div class="header-action-icon-2" v-if="isLogin">
                   <a class="mini-cart-icon" href="shop-cart.html">
                     <img
                       alt="Nest"
@@ -818,12 +818,13 @@ export default {
       shopActive: false,
       selectedFilter: "Products",
       searchFocus: false,
-      isLogin: false,
+      isLogin: null,
     };
   },
   created() {
     window.addEventListener("resize", this.handleResize);
     this.handleResize();
+    this.isLogin = this.$store.getters.GET_AUTH_TOKEN;
   },
   methods: {
     handleResize() {
