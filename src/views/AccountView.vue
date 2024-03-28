@@ -430,11 +430,11 @@
                               v-for="first in dataUser.address"
                               :key="first.priority">
                               {{ first.name }}<br />
-                              {{ first.street }} , {{ first.city }} ,<br />
-                              {{ first.state }} , {{ first.country }},
+                              {{ first.street }}, {{ first.subdistrict }},
+                              <br />{{ first.district }}, {{ first.city }},
+                              {{ first.state }}, <br />{{ first.country }},
                               {{ first.zip }} <br />
                               <a href="#" class="btn-small">Edit</a>
-                              <a href="#" class="btn-small ps-3">Delete</a>
                             </address>
                           </div>
                         </div>
@@ -450,11 +450,21 @@
                               :key="first.priority"
                               class="mb-3">
                               {{ first.name }}<br />
-                              {{ first.street }} , {{ first.city }} ,<br />
-                              {{ first.state }} , {{ first.country }},
+                              {{ first.street }}, {{ first.subdistrict }},
+                              <br />{{ first.district }}, {{ first.city }},
+                              {{ first.state }}, <br />{{ first.country }},
                               {{ first.zip }} <br />
-                              <a href="#" class="btn-small">Edit</a>
-                              <a href="#" class="btn-small ps-3">Delete</a>
+                              <a @click="showUpdates(first)" class="btn-small"
+                                >Edit</a
+                              >
+                              <a
+                                @click="deleteAddress(first.id, first.priority)"
+                                class="btn-small ps-3"
+                                >Delete</a
+                              >
+                              <a href="#" class="btn-small ps-3"
+                                >Set As Primary</a
+                              >
                             </address>
                           </div>
                         </div>
@@ -473,6 +483,16 @@
                       <div class="card-body">
                         <form method="post" name="enq">
                           <div class="row">
+                            <div class="form-group col-md-12">
+                              <label>NIK <span class="required">*</span></label>
+                              <input
+                                required=""
+                                class="form-control"
+                                name="nik"
+                                v-model="dataUser.nik"
+                                type="number"
+                                disabled="true" />
+                            </div>
                             <div class="form-group col-md-6">
                               <label
                                 >First Name
@@ -481,8 +501,10 @@
                               <input
                                 required=""
                                 class="form-control"
-                                name="name"
-                                type="text" />
+                                name="firstname"
+                                v-model="dataUser.firstname"
+                                type="text"
+                                disabled="true" />
                             </div>
                             <div class="form-group col-md-6">
                               <label
@@ -492,18 +514,10 @@
                               <input
                                 required=""
                                 class="form-control"
-                                name="phone" />
-                            </div>
-                            <div class="form-group col-md-12">
-                              <label
-                                >Display Name
-                                <span class="required">*</span></label
-                              >
-                              <input
-                                required=""
-                                class="form-control"
-                                name="dname"
-                                type="text" />
+                                name="lastname"
+                                v-model="dataUser.lastname"
+                                type="text"
+                                disabled="true" />
                             </div>
                             <div class="form-group col-md-12">
                               <label
@@ -514,47 +528,56 @@
                                 required=""
                                 class="form-control"
                                 name="email"
-                                type="email" />
+                                v-model="dataUser.email"
+                                type="email"
+                                disabled="true" />
                             </div>
                             <div class="form-group col-md-12">
                               <label
-                                >Current Password
+                                >Phone Number
                                 <span class="required">*</span></label
                               >
                               <input
                                 required=""
                                 class="form-control"
-                                name="password"
-                                type="password" />
+                                name="phone"
+                                v-model="dataUser.phone"
+                                type="tel"
+                                disabled="true" />
                             </div>
                             <div class="form-group col-md-12">
                               <label
-                                >New Password
+                                >Birth Date
                                 <span class="required">*</span></label
                               >
                               <input
                                 required=""
                                 class="form-control"
-                                name="npassword"
-                                type="password" />
+                                name="birthDate"
+                                v-model="dataUser.birth_date"
+                                type="date"
+                                disabled="true" />
                             </div>
                             <div class="form-group col-md-12">
                               <label
-                                >Confirm Password
+                                >Birth Place
                                 <span class="required">*</span></label
                               >
                               <input
                                 required=""
                                 class="form-control"
-                                name="cpassword"
-                                type="password" />
+                                name="birthPlace"
+                                v-model="dataUser.birth_place"
+                                type="text"
+                                disabled="true" />
                             </div>
                             <div class="col-md-12">
                               <button
                                 type="submit"
                                 class="btn btn-fill-out submit font-weight-bold"
                                 name="submit"
-                                value="Submit">
+                                value="Submit"
+                                disabled="true">
                                 Save Change
                               </button>
                             </div>
@@ -629,57 +652,112 @@
               <div class="row">
                 <div class="col-lg-6">
                   <label for="state" class="fw-bold text-secondary form-label"
-                    >state<span class="text-danger"
-                      >* {{ isError.state }}</span
-                    ></label
-                  >
-                  <select id="state" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                  </select>
-                </div>
-                <div class="col-lg-6">
-                  <label for="state" class="fw-bold text-secondary form-label"
                     >State<span class="text-danger"
                       >* {{ isError.state }}</span
                     ></label
                   >
-                  <input
-                    type="text"
+                  <select
                     class="form-control"
-                    style="max-height: 40px"
                     v-model="state"
-                    name="state" />
+                    style="max-height: 40px"
+                    @change="selectCity()">
+                    <option :value="dnull">Choose...</option>
+                    <option
+                      v-for="prov in provinsi"
+                      :key="prov.id"
+                      :value="{ id: prov.id, nama: prov.text }">
+                      {{ prov.text }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-lg-6">
+                  <label for="city" class="fw-bold text-secondary form-label"
+                    >City<span class="text-danger"
+                      >* {{ isError.city }}</span
+                    ></label
+                  >
+                  <select
+                    class="form-control"
+                    v-model="city"
+                    style="max-height: 40px"
+                    @change="selectSubdis()">
+                    <option :value="dnull">Choose...</option>
+                    <option
+                      v-for="kt in kota"
+                      :key="kt.id"
+                      :value="{ id: kt.id, nama: kt.text }">
+                      {{ kt.text }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
             <div class="mb-3">
               <div class="row">
-                <div class="col-lg-8">
-                  <label for="country" class="fw-bold text-secondary form-label"
-                    >Country<span class="text-danger"
-                      >* {{ isError.country }}</span
+                <div class="col-lg-6">
+                  <label
+                    for="subdistrict"
+                    class="fw-bold text-secondary form-label"
+                    >Subdistrict<span class="text-danger"
+                      >* {{ isError.subdistrict }}</span
                     ></label
                   >
-                  <input
-                    type="text"
+                  <select
                     class="form-control"
+                    v-model="subdistrict"
                     style="max-height: 40px"
-                    v-model="country"
-                    name="country" />
+                    @change="selectWard()">
+                    <option :value="dnull">Choose...</option>
+                    <option
+                      v-for="kec in kecamatan"
+                      :key="kec.id"
+                      :value="{ id: kec.id, nama: kec.text }">
+                      {{ kec.text }}
+                    </option>
+                  </select>
                 </div>
+                <div class="col-lg-6">
+                  <label for="ward" class="fw-bold text-secondary form-label"
+                    >Ward<span class="text-danger"
+                      >* {{ isError.ward }}</span
+                    ></label
+                  >
+                  <select
+                    class="form-control"
+                    v-model="ward"
+                    style="max-height: 40px"
+                    @change="selectZip()">
+                    <option :value="dnull">Choose...</option>
+                    <option
+                      v-for="kel in kelurahan"
+                      :key="kel.id"
+                      :value="{ id: kel.id, nama: kel.text }">
+                      {{ kel.text }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="row">
                 <div class="col-lg-4">
                   <label for="zip" class="fw-bold text-secondary form-label"
                     >Zip Code<span class="text-danger"
                       >* {{ isError.zip }}</span
                     ></label
                   >
-                  <input
-                    type="number"
+                  <select
                     class="form-control"
-                    style="max-height: 40px"
                     v-model="zip"
-                    name="zip" />
+                    style="max-height: 40px">
+                    <option :value="dnull">Choose...</option>
+                    <option
+                      v-for="kp in kodePos"
+                      :key="kp.id"
+                      :value="{ id: kp.id, nama: kp.text }">
+                      {{ kp.text }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -687,7 +765,193 @@
         </div>
       </div>
       <div class="alert-button">
-        <button class="btn-theme" @click="artikelCatCreate()">
+        <button class="btn-theme" @click="addressCreate()">
+          <span v-if="!is_proccess">Confirm</span>
+          <span
+            v-if="is_proccess"
+            class="spinner-border"
+            role="status"
+            style="width: 1rem; height: 1rem"></span>
+        </button>
+
+        <button class="btn-dangers" @click="closeButton()">
+          <span v-if="!is_proccess">Cancel</span
+          ><span
+            v-if="is_proccess"
+            class="spinner-border"
+            role="status"
+            style="width: 1rem; height: 1rem"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-container" v-if="showUpdate">
+    <div class="overlay"></div>
+    <div class="alert-dialog shake-r">
+      <div class="btn-close" style="z-index: 10" @click="closeButton()"></div>
+
+      <div
+        style="
+          position: relative;
+          width: 100%;
+          height: 50px;
+          border-bottom: 2px solid var(--canvas);
+        ">
+        <span class="alert-title">Create New Address</span>
+      </div>
+
+      <div
+        style="
+          position: relative;
+          width: 100%;
+          display: flex;
+          border-bottom: 2px solid var(--canvas);
+          height: 80%;
+          overflow-y: scroll;
+        ">
+        <div class="container m-3">
+          <div class="row">
+            <div class="mb-3">
+              <label for="name" class="fw-bold text-secondary form-label"
+                >Name<span class="text-danger"
+                  >* {{ isError.name }}</span
+                ></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                style="max-height: 40px"
+                v-model="name"
+                name="name" />
+            </div>
+            <div class="mb-3">
+              <label for="address" class="fw-bold text-secondary form-label"
+                >Address<span class="text-danger"
+                  >* {{ isError.address }}</span
+                ></label
+              >
+              <textarea
+                type="text"
+                class="form-control"
+                rows="4"
+                cols="50"
+                v-model="address"
+                name="address"></textarea>
+            </div>
+            <div class="mb-3">
+              <div class="row">
+                <div class="col-lg-6">
+                  <label for="state" class="fw-bold text-secondary form-label"
+                    >State<span class="text-danger"
+                      >* {{ isError.state }}</span
+                    ></label
+                  >
+                  <select
+                    class="form-control"
+                    v-model="state"
+                    style="max-height: 40px"
+                    @change="selectCity()">
+                    <option
+                      v-for="prov in provinsi"
+                      :key="prov.id"
+                      :value="{ id: prov.id, nama: prov.text }">
+                      {{ prov.text }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-lg-6">
+                  <label for="city" class="fw-bold text-secondary form-label"
+                    >City<span class="text-danger"
+                      >* {{ isError.city }}</span
+                    ></label
+                  >
+                  <select
+                    class="form-control"
+                    v-model="city"
+                    style="max-height: 40px"
+                    @change="selectSubdis()">
+                    <option
+                      v-for="kt in kota"
+                      :key="kt.id"
+                      :value="{ id: kt.id, nama: kt.text }">
+                      {{ kt.text }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="row">
+                <div class="col-lg-6">
+                  <label
+                    for="subdistrict"
+                    class="fw-bold text-secondary form-label"
+                    >Subdistrict<span class="text-danger"
+                      >* {{ isError.subdistrict }}</span
+                    ></label
+                  >
+                  <select
+                    class="form-control"
+                    v-model="subdistrict"
+                    style="max-height: 40px"
+                    @change="selectWard()">
+                    <option
+                      v-for="kec in kecamatan"
+                      :key="kec.id"
+                      :value="{ id: kec.id, nama: kec.text }">
+                      {{ kec.text }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-lg-6">
+                  <label for="ward" class="fw-bold text-secondary form-label"
+                    >Ward<span class="text-danger"
+                      >* {{ isError.ward }}</span
+                    ></label
+                  >
+                  <select
+                    class="form-control"
+                    v-model="ward"
+                    style="max-height: 40px"
+                    @change="selectZip()">
+                    <option
+                      v-for="kel in kelurahan"
+                      :key="kel.id"
+                      :value="{ id: kel.id, nama: kel.text }">
+                      {{ kel.text }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="row">
+                <div class="col-lg-4">
+                  <label for="zip" class="fw-bold text-secondary form-label"
+                    >Zip Code<span class="text-danger"
+                      >* {{ isError.zip }}</span
+                    ></label
+                  >
+                  <select
+                    class="form-control"
+                    v-model="zip"
+                    style="max-height: 40px">
+                    <option
+                      v-for="kp in kodePos"
+                      :key="kp.id"
+                      :value="{ id: kp.id, nama: kp.text }">
+                      {{ kp.text }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="alert-button">
+        <button class="btn-theme" @click="addressUpdate()">
           <span v-if="!is_proccess">Confirm</span>
           <span
             v-if="is_proccess"
@@ -744,19 +1008,24 @@ export default {
         secondAddress: null,
       },
       showCreate: false,
+      showUpdate: false,
       is_proccess: false,
       name: null,
       address: null,
-      city: null,
       state: null,
-      country: null,
+      city: null,
+      subdistrict: null,
+      ward: null,
       zip: null,
+      priority: null,
+      id: null,
       isError: {
         name: null,
         address: null,
-        city: null,
         state: null,
-        country: null,
+        city: null,
+        subdistrict: null,
+        ward: null,
         zip: null,
       },
       cntErr: 0,
@@ -764,6 +1033,13 @@ export default {
       showNotif: false,
       message: "",
       type: "",
+      /*api address id*/
+      provinsi: [],
+      kota: [],
+      kecamatan: [],
+      kelurahan: [],
+      kodePos: [],
+      dnull: null,
       customer: {
         order: [
           {
@@ -971,24 +1247,77 @@ export default {
         console.log(error);
       }
     },
-    showCreates() {
+    async showCreates() {
+      this.provinsi = [];
+      const { data } = await axios.get(
+        "https://alamat.thecloudalert.com/api/provinsi/get/",
+        {}
+      );
+      this.provinsi = data.result;
+
       this.showCreate = true;
       this.name = null;
       this.address = null;
-      this.city = null;
       this.state = null;
-      this.country = null;
+      this.city = null;
+      this.subdistrict = null;
+      this.ward = null;
       this.zip = null;
       this.isError = {
         name: null,
         address: null,
-        city: null,
         state: null,
-        country: null,
+        city: null,
+        subdistrict: null,
+        ward: null,
         zip: null,
       };
     },
-    async artikelCatCreate() {
+    async selectCity() {
+      this.kota = [];
+      this.kecamatan = [];
+      this.kelurahan = [];
+      this.kodePos = [];
+      const { data } = await axios.get(
+        "https://alamat.thecloudalert.com/api/kabkota/get/?d_provinsi_id=" +
+          this.state.id,
+        {}
+      );
+      this.kota = data.result;
+    },
+    async selectSubdis() {
+      this.kecamatan = [];
+      this.kelurahan = [];
+      this.kodePos = [];
+      const { data } = await axios.get(
+        "https://alamat.thecloudalert.com/api/kecamatan/get/?d_kabkota_id=" +
+          this.city.id,
+        {}
+      );
+      this.kecamatan = data.result;
+    },
+    async selectWard() {
+      this.kelurahan = [];
+      this.kodePos = [];
+      const { data } = await axios.get(
+        "https://alamat.thecloudalert.com/api/kelurahan/get/?d_kecamatan_id=" +
+          this.subdistrict.id,
+        {}
+      );
+      this.kelurahan = data.result;
+    },
+    async selectZip() {
+      this.kodePos = [];
+      const { data } = await axios.get(
+        "https://alamat.thecloudalert.com/api/kodepos/get/?d_kabkota_id=" +
+          this.city.id +
+          "&d_kecamatan_id=" +
+          this.subdistrict.id,
+        {}
+      );
+      this.kodePos = data.result;
+    },
+    async addressCreate() {
       try {
         if (this.is_proccess) return;
         this.is_proccess = true;
@@ -996,9 +1325,10 @@ export default {
         this.isError = {
           name: null,
           address: null,
-          city: null,
           state: null,
-          country: null,
+          city: null,
+          subdistrict: null,
+          ward: null,
           zip: null,
         };
         if (!this.name) {
@@ -1011,19 +1341,24 @@ export default {
           this.isError.address = "Address is required";
           this.cntErr += 1;
         }
-        if (!this.city) {
-          this.is_proccess = false;
-          this.isError.city = "City name is required";
-          this.cntErr += 1;
-        }
         if (!this.state) {
           this.is_proccess = false;
           this.isError.state = "State is required";
           this.cntErr += 1;
         }
-        if (!this.country) {
+        if (!this.city) {
           this.is_proccess = false;
-          this.isError.country = "Country is required";
+          this.isError.city = "City name is required";
+          this.cntErr += 1;
+        }
+        if (!this.subdistrict) {
+          this.is_proccess = false;
+          this.isError.subdistrict = "Sub District is required";
+          this.cntErr += 1;
+        }
+        if (!this.ward) {
+          this.is_proccess = false;
+          this.isError.ward = "Ward is required";
           this.cntErr += 1;
         }
         if (!this.zip) {
@@ -1038,15 +1373,15 @@ export default {
           priority: "2",
           userid: this.dataUser.id,
           name: this.name,
+          country: "Indonesia",
+          state: this.state.nama,
+          city: this.city.nama,
+          district: this.subdistrict.nama,
+          subdistrict: this.ward.nama,
+          zip: String(this.zip.nama),
           street: this.address,
-          city: this.city,
-          state: this.state,
-          country: this.country,
-          zip: String(this.zip),
-          district: null,
           isactive: true,
         };
-
         await axios.post("/address", addData, {
           headers: {
             Authorization: this.$store.getters.GET_AUTH_TOKEN,
@@ -1066,7 +1401,262 @@ export default {
       } catch (error) {
         this.message = " Create address failed";
         this.showNotif = true;
-        this.type = "danger";
+        this.type = "error";
+        setTimeout(() => {
+          this.message = "";
+          this.showNotif = false;
+          this.type = "";
+          this.is_proccess = false;
+        }, 1500);
+        console.log(error);
+      }
+    },
+    async deleteAddress(id, priority) {
+      try {
+        if (this.is_proccess) return;
+        this.is_proccess = true;
+        const deleteData = {
+          id: id,
+          userid: this.dataUser.id,
+          priority: priority,
+        };
+        await axios.delete("/address", {
+          data: deleteData,
+          headers: {
+            Authorization: this.$store.getters.GET_AUTH_TOKEN,
+          },
+        });
+        this.message = " Delete address successfully";
+        this.showNotif = true;
+        this.type = "success";
+        setTimeout(() => {
+          this.message = "";
+          this.showNotif = false;
+          this.type = "";
+          this.is_proccess = false;
+          window.location.reload();
+        }, 1500);
+      } catch (error) {
+        this.message = " Delete address failed";
+        this.showNotif = true;
+        this.type = "error";
+        setTimeout(() => {
+          this.message = "";
+          this.showNotif = false;
+          this.type = "";
+          this.is_proccess = false;
+        }, 1500);
+        console.log(error);
+      }
+    },
+    async showUpdates(dataAddress) {
+      this.provinsi = [];
+      this.kota = [];
+      this.kecamatan = [];
+      this.kelurahan = [];
+      this.kodePos = [];
+
+      //Get provinsi
+      const { data } = await axios.get(
+        "https://alamat.thecloudalert.com/api/provinsi/get/",
+        {}
+      );
+      this.provinsi = data.result;
+      this.provinsi.forEach((el) => {
+        if (el.text === dataAddress.state) {
+          this.state = {
+            id: el.id,
+            nama: el.text,
+          };
+        }
+      });
+      //Get Kota
+      await axios
+        .get(
+          "https://alamat.thecloudalert.com/api/kabkota/get/?d_provinsi_id=" +
+            this.state.id
+        )
+        .then((response) => {
+          if (this.state) {
+            this.kota = response.data.result;
+            this.kota.forEach((el) => {
+              if (el.text === dataAddress.city) {
+                this.city = {
+                  id: el.id,
+                  nama: el.text,
+                };
+              }
+            });
+          }
+        });
+      //Get Kecamatan
+      await axios
+        .get(
+          "https://alamat.thecloudalert.com/api/kecamatan/get/?d_kabkota_id=" +
+            this.city.id
+        )
+        .then((response) => {
+          if (this.city) {
+            this.kecamatan = response.data.result;
+            this.kecamatan.forEach((el) => {
+              if (el.text === dataAddress.district) {
+                this.subdistrict = {
+                  id: el.id,
+                  nama: el.text,
+                };
+              }
+            });
+          }
+        });
+
+      //Get Kelurahan
+      await axios
+        .get(
+          "https://alamat.thecloudalert.com/api/kelurahan/get/?d_kecamatan_id=" +
+            this.subdistrict.id
+        )
+        .then((response) => {
+          if (this.subdistrict) {
+            this.kelurahan = response.data.result;
+            this.kelurahan.forEach((el) => {
+              if (el.text === dataAddress.subdistrict) {
+                this.ward = {
+                  id: el.id,
+                  nama: el.text,
+                };
+              }
+            });
+          }
+        });
+
+      //Get Kode Pos
+      await axios
+        .get(
+          "https://alamat.thecloudalert.com/api/kodepos/get/?d_kabkota_id=" +
+            this.city.id +
+            "&d_kecamatan_id=" +
+            this.subdistrict.id
+        )
+        .then((response) => {
+          if (this.city && this.subdistrict) {
+            this.kodePos = response.data.result;
+            this.kodePos.forEach((el) => {
+              if (el.text === String(dataAddress.zip)) {
+                this.zip = {
+                  id: el.id,
+                  nama: el.text,
+                };
+              }
+            });
+          }
+        });
+
+      this.showUpdate = true;
+      this.name = dataAddress.name;
+      this.address = dataAddress.street;
+      this.priority = dataAddress.priority;
+      this.id = dataAddress.id;
+      this.isError = {
+        name: null,
+        address: null,
+        state: null,
+        city: null,
+        subdistrict: null,
+        ward: null,
+        zip: null,
+      };
+    },
+    async addressUpdate() {
+      try {
+        if (this.is_proccess) return;
+        this.is_proccess = true;
+
+        this.isError = {
+          name: null,
+          address: null,
+          state: null,
+          city: null,
+          subdistrict: null,
+          ward: null,
+          zip: null,
+        };
+        if (!this.name) {
+          this.is_proccess = false;
+          this.isError.name = "Name address is required";
+          this.cntErr += 1;
+        }
+        if (!this.address) {
+          this.is_proccess = false;
+          this.isError.address = "Address is required";
+          this.cntErr += 1;
+        }
+        if (!this.state) {
+          this.is_proccess = false;
+          this.isError.state = "State is required";
+          this.cntErr += 1;
+        }
+        if (!this.city) {
+          this.is_proccess = false;
+          this.isError.city = "City name is required";
+          this.cntErr += 1;
+        }
+        if (!this.subdistrict) {
+          this.is_proccess = false;
+          this.isError.subdistrict = "Sub District is required";
+          this.cntErr += 1;
+        }
+        if (!this.ward) {
+          this.is_proccess = false;
+          this.isError.ward = "Ward is required";
+          this.cntErr += 1;
+        }
+        if (!this.zip) {
+          this.is_proccess = false;
+          this.isError.zip = "Zip code is required";
+          this.cntErr += 1;
+        }
+        if (!this.id && !this.priority) {
+          this.is_proccess = false;
+          this.isError.name = "Data tidak valid";
+          this.cntErr += 1;
+        }
+        if (this.cntErr > 0) {
+          return;
+        }
+        const putData = {
+          id: this.id,
+          priority: this.priority,
+          userid: this.dataUser.id,
+          name: this.name,
+          country: "Indonesia",
+          state: this.state.nama,
+          city: this.city.nama,
+          district: this.subdistrict.nama,
+          subdistrict: this.ward.nama,
+          zip: String(this.zip.nama),
+          street: this.address,
+          isactive: true,
+        };
+        await axios.put("/address", putData, {
+          headers: {
+            Authorization: this.$store.getters.GET_AUTH_TOKEN,
+            userid: store.getters.GET_AUTH_INFO.id,
+          },
+        });
+        this.message = " Update address successfully";
+        this.showNotif = true;
+        this.type = "success";
+        setTimeout(() => {
+          this.message = "";
+          this.showNotif = false;
+          this.type = "";
+          this.is_proccess = false;
+          window.location.reload();
+        }, 1500);
+      } catch (error) {
+        this.message = " Update address failed";
+        this.showNotif = true;
+        this.type = "error";
         setTimeout(() => {
           this.message = "";
           this.showNotif = false;
@@ -1085,6 +1675,7 @@ export default {
     },
     closeButton() {
       this.showCreate = false;
+      this.showUpdate = false;
     },
     logout() {
       const data = {
