@@ -72,7 +72,7 @@ router.beforeEach((to, from, next) => {
   } else if (to.matched.some((record) => record.meta.guest)) {
     if (store.getters.GET_AUTH_TOKEN) {
       next({
-        name: 'Home',
+        name: 'Store',
       });
     } else {
       next();

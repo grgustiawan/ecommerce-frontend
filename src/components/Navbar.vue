@@ -288,8 +288,9 @@
                     class="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
                     <ul v-show="isLogin">
                       <li>
-                        <a href="page-account.html"
-                          ><i class="fi fi-rs-user mr-10"></i>My Account</a
+                        <router-link :to="{ name: 'Account' }"
+                          ><i class="fi fi-rs-user mr-10"></i>My
+                          Account</router-link
                         >
                       </li>
                       <li>
@@ -315,7 +316,7 @@
                         >
                       </li>
                       <li>
-                        <a href="page-login.html"
+                        <a @click="logout()" ref="page-login.html"
                           ><i class="fi fi-rs-sign-out mr-10"></i>Sign out</a
                         >
                       </li>
@@ -859,6 +860,21 @@ export default {
       const clickedFilter = event.target;
       const classes = clickedFilter.innerText;
       this.selectedFilter = classes;
+    },
+    logout() {
+      const data = {
+        id: String(this.$store.getters.GET_AUTH_INFO.id),
+        access_token: this.$store.getters.GET_AUTH_TOKEN,
+      };
+
+      this.$store
+        .dispatch("LOGOUT", data)
+        .then(() => {
+          window.location.href = "/login";
+        })
+        .catch(() => {
+          window.location.href = "/login";
+        });
     },
   },
 };

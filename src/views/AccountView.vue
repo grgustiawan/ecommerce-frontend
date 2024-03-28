@@ -1205,7 +1205,7 @@ export default {
     async dataLogin() {
       try {
         if (store.getters.GET_AUTH_TOKEN) {
-          const { data } = await axios.get("/address", {
+          const { data } = await axios.get(this.$user + "/address", {
             headers: {
               Authorization: store.getters.GET_AUTH_TOKEN,
               userid: store.getters.GET_AUTH_INFO.id,
@@ -1382,7 +1382,7 @@ export default {
           street: this.address,
           isactive: true,
         };
-        await axios.post("/address", addData, {
+        await axios.post(this.$user + "/address", addData, {
           headers: {
             Authorization: this.$store.getters.GET_AUTH_TOKEN,
             userid: store.getters.GET_AUTH_INFO.id,
@@ -1420,7 +1420,7 @@ export default {
           userid: this.dataUser.id,
           priority: priority,
         };
-        await axios.delete("/address", {
+        await axios.delete(this.$user + "/address", {
           data: deleteData,
           headers: {
             Authorization: this.$store.getters.GET_AUTH_TOKEN,
@@ -1637,7 +1637,7 @@ export default {
           street: this.address,
           isactive: true,
         };
-        await axios.put("/address", putData, {
+        await axios.put(this.$user + "/address", putData, {
           headers: {
             Authorization: this.$store.getters.GET_AUTH_TOKEN,
             userid: store.getters.GET_AUTH_INFO.id,
