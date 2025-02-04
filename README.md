@@ -1,5 +1,3 @@
-# apotikmelawai
-
 ## Project setup
 ```
 npm install
